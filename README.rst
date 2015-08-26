@@ -20,6 +20,7 @@ Lamlam project
 This project is intended to be the core of the computational engine
 that the `everest`_ project will use.
 
-Lamlam, or {LAM}^2.
+Lamlam, or ${LAM}^2$.
 
-Lam is A Machine.  
+Lam is A Machine.  Squared.
+
