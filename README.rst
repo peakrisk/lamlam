@@ -24,3 +24,19 @@ Lamlam, or ${LAM}^2$.
 
 Lam is A Machine.  Squared.
 
+Names
+=====
+
+magic roundabout
+   Send stuff all over the place
+
+syphon the python
+   Drain the queue of incoming stuff
+
+forgetful git
+   Memory issues   
+
+   
+
+
+
