@@ -43,6 +43,13 @@ in elevation on Earth over such a short distance.
 So, if you go to Guam and make the modest 1300 foot climb you can
 arguably claim to be on the tallest mountain on earth.
 
+Privacy
+=======
+
+Richelieu:
+
+  Give me six lines written by the most honest man and I will find in
+  them reason to hang him.
 
 
 Lamlam project
