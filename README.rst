@@ -1,3 +1,33 @@
+From LamLam to Everest
+======================
+
+Tales of adventure, through hills and dales, over peaks and bridges,
+from islands in the sea, to clouds in the sky, across the sea and
+through the sky to the peak of Everest and the universe beyond.
+
+An infinite cast of magical characters with infinite enigma variations.
+
+Ghost:
+
+        [Beneath] Swear.
+
+HAMLET:
+
+        Well said, old mole! canst work i' the earth so fast?
+        A worthy pioner! Once more remove, good friends.
+
+HORATIO:
+
+        O day and night, but this is wondrous strange!
+
+HAMLET:
+
+        And therefore as a stranger give it welcome.
+        There are more things in heaven and earth, Horatio,
+        Than are dreamt of in your philosophy.
+
+
+
 Mount Lamlam
 ============
 
@@ -12,6 +42,14 @@ in elevation on Earth over such a short distance.
 
 So, if you go to Guam and make the modest 1300 foot climb you can
 arguably claim to be on the tallest mountain on earth.
+
+Privacy
+=======
+
+Richelieu:
+
+  Give me six lines written by the most honest man and I will find in
+  them reason to hang him.
 
 
 Lamlam project
