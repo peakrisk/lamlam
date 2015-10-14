@@ -1,8 +1,9 @@
 General
 =======
 
-Knows more and more about less and less until knows everything about
-nothing.
+Knows less and less about more and more until knows nothing
+about everything.
+
 
 
 
