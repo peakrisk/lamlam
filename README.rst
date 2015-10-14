@@ -46,10 +46,14 @@ arguably claim to be on the tallest mountain on earth.
 Privacy
 =======
 
-Richelieu:
+@Richelieu:
 
   Give me six lines written by the most honest man and I will find in
   them reason to hang him.
+
+@Snowden:
+
+   How man tweets have you sent?
 
 
 Lamlam project
