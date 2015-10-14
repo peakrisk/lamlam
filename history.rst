@@ -1,6 +1,9 @@
 History
 =======
 
+A brief history of time
+-----------------------
+
 Change
 ------
 
@@ -16,3 +19,6 @@ Discover
 
 Teleport
 --------
+
+Time Vault
+----------
