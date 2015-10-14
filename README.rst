@@ -62,6 +62,51 @@ Lamlam, or ${LAM}^2$.
 
 Lam is A Machine.  Squared.
 
+Inspiration
+===========
+
+* All
+
+TedX Bermuda 2015
+-----------------
+
+sortable: True
+interpretable: @future
+
+In Motion: express, babelfish, fun...
+
+Yesha Tow: magic@home!
+
+Michael Frith: puppets, bridge, quest, babelfish, environment, magic...
+
+Bryan Davis: chemistry, search, research, quest...
+
+Tom Gage: energy, research, ideas...
+
+Radhika Nagpal: babelfish, collaboration, bridges, mountains...
+
+Clilly Catiglia: group, babelfish, fun...
+
+Martin Burger: infectious, happinness, research...
+
+Johnie McGlade: one, magic, babelfish, puppet,..
+
+Kathleen Mullen:  many magic, babelfish, puppets...
+
+Martha Dismont: bridges, help, focus, us...
+
+Barrington Irving: mercurial, global, inspiration, babelfish...
+
+Stuart Lacey, privacy, awareness, babelfish
+
+-- Was this to be supposed to be 6 words?
+-- @Babelfish:  I need help here
+-- @araucaria:  hello?
+  
+
+## FIXME, might need py2rst here.
+## FIXME, also incoming repos need interpretation.
+
 Names
 =====
 
