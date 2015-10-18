@@ -14,7 +14,7 @@ When I woke up,
 I had shackles on my feet.
 
 [I found a little freedom,
-from the entire world] * 8
+ from the entire world] * 8
 
 When I woke up,
 I found a world to love.
@@ -30,6 +30,23 @@ I found a world in love.
 
 When we woke up,
 We found a world of freedom
+
+[It takes a true free man,
+ to sing a freedom song] * 8
+
+I am trying now,
+Won't you come and try with me?
+
+Key
+===
+
+8 == 2^3
+8 == inf
+
+With
+----
+
+@fish@all
 
 Credits
 -------
