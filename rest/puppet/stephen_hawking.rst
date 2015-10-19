@@ -15,3 +15,21 @@ Answer to the meaning of life
 
 Free Software to interface to computers
 
+Song
+====
+
+do not let me be misunderstood
+
+~ me == not understood
+
+see: inverse
+
+Help
+====
+
+There is this project: https://01.org/acat
+
+This is code Intel have released that is used in Stephen Hawking's
+voice and more.
+
+This can give help to many.
