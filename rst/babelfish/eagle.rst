@@ -1,7 +1,8 @@
 Eagle
 =====
 
-Soars the heights above mountians and dives into dales.
+Soars the heights above mountians and dives into dales, ascends to the
+stars and descends to visits worlds.
 
 Sees all with piercing clarity.
 
@@ -36,3 +37,8 @@ Focus
 -----
 
 @you
+
+Has Landed
+----------
+
+@1959 @moon
