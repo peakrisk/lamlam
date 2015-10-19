@@ -15,6 +15,19 @@ why not?
 
 name?
 
+status
+------
+
+@current = random
+
+what's up doc?
+
+show me
+
+help me
+
+magit magic
+
 stage
 -----
 
@@ -28,7 +41,7 @@ commit
 pull
 ----
 
-refresh
+see: teleport
 
 push
 ----
@@ -55,4 +68,12 @@ commitment history
 interpret
 ---------
 
-help
+help @future @now
+
+teleport
+--------
+
+help see interpret
+
+see: history
+
