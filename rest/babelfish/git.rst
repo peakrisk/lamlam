@@ -26,5 +26,7 @@ song
 
 @magic@all
 
+ignore
+------
 
-
+0^0 @.gitignore
