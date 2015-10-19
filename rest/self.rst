@@ -18,3 +18,8 @@ interpret
 music
 
 code?
+
+status
+------
+
+home free infinite special love fish
