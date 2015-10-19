@@ -25,3 +25,28 @@ status
 ------
 
 home free infinite special love fish
+
+pigs
+----
+
+loyal friends
+
+blades
+------
+
+@random@perverse
+
+@salmon@70  teleport and garble  @sammon@now
+
+@sharp
+
+with @geese
+
+senators
+--------
+
+red and blue jays
+-----------------
+
+
+
