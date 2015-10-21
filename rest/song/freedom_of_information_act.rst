@@ -37,6 +37,10 @@ We found a world of freedom
 I am trying now,
 Won't you come and try with me?
 
+fish@ [no worry sing hapy freedom song with love] @ fish
+
+the rest is yours
+
 Key
 ===
 
