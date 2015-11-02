@@ -19,8 +19,8 @@ rest = open("%(infile)s").read()
 
 boot.interpret(rest)
 
-#cog.out(boot.say())
-cog.out("hello world")
+cog.out(boot.say())
+#cog.out("hello world")
 """
 
 COG_RUN = """
@@ -32,6 +32,9 @@ if __name__ == '__main__':
     Cog().main(['cog', '-cr', __file__])
 """
 
+def item_name(item):
+
+    return item.__class__.__name__
 
 class Bootstrap:
 
@@ -50,26 +53,44 @@ class Bootstrap:
 
     def say(self, *args, **kwargs):
         """ Write a python cog file to interpret rst """
+        self.response = []
         self.dump(self.document)
+
+        return '\n'.join(self.response)
 
     def dump(self, data, depth=0):
 
         for item in data:
             print(' ' * depth, item, type(item))
 
-            name = item.__class__.__name__
+            name = item_name(item)
 
             method = getattr(self, name, self.unknown)
 
-            method()
+            print(name)
+            self.response.append(method(item, depth))
 
-    def unknown(self, item):
+            for sub in item:
+                if not str(sub) in sub:
+                    self.dump(sub, depth+1)
 
-        print('unknown')
+        return
 
-    def section(self, item):
+    def unknown(self, item, depth):
 
-        pass
+        return "# unknkown: %s depth: %d" % (item_name(item), depth)
+
+    def section(self, item, depth):
+        """ Top section is a class """
+        TEMPLATE = """
+        class %(name)s:
+            pass
+
+        """
+        print(item.attributes)
+
+        name = item.attributes['ids'][0]
+        return TEMPLATE % locals()
         
 
 
