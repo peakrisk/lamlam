@@ -44,6 +44,8 @@ class Bootstrap:
             components=(rst.Parser,)
             ).get_default_values()
 
+        self.attributes = {}
+
     def interpret(self, data):
 
         self.parser = rst.Parser()
@@ -63,6 +65,8 @@ class Bootstrap:
         for item in data:
             print(' ' * depth, item, type(item))
 
+            self.update_attributes(item)
+
             name = item_name(item)
 
             method = getattr(self, name, self.unknown)
@@ -76,23 +80,76 @@ class Bootstrap:
 
         return
 
+    def update_attributes(self, item):
+
+        attributes = getattr(item, 'attributes', {})
+        print(attributes)
+        self.attributes.update(attributes)
+        print(self.attributes)
+
     def unknown(self, item, depth):
 
         return "# unknkown: %s depth: %d" % (item_name(item), depth)
 
     def section(self, item, depth):
         """ Top section is a class """
+
+        self.name = item.attributes['ids'][0]
+        return self._class(item, depth)
+
+    def paragraph(self, item, depth):
+        """ Top section is a class """
+        
+        method = item.astext()
+        self.method = clean_method_name(method)
+        return ""
+
+    def block_quote(self, item, depth):
+        """ Complete a function """
+
+        result = item.astext()
+        self.result = result
+        
+        return self._method(item, depth)
+
+    def _method(self, item, depth):
+
+        TEMPLATE = """
+        def %(method)s(self):
+
+            return "%(result)s"
+        """
+        msg = TEMPLATE % self.__dict__
+
+        return self.form(msg, depth)
+
+    def _class(self, item, depth):
+
         TEMPLATE = """
         class %(name)s:
             pass
 
         """
-        print(item.attributes)
+        msg = TEMPLATE % self.__dict__
 
-        name = item.attributes['ids'][0]
-        return TEMPLATE % locals()
+        return self.form(msg, depth)
+
+    def form(self, msg, depth):
+
+        lines = msg.split('\n')
+        tab = 4
+        pad = " " * tab
         
+        return '\n'.join([(depth * pad) + line[2*tab:]
+                          for line in lines])
 
+
+def clean_method_name(method):
+
+    method = method.strip(':?').replace(' ', '_')
+
+    return method
+    
 
 if __name__ == '__main__':
 
