@@ -44,7 +44,12 @@ class Bootstrap:
             components=(rst.Parser,)
             ).get_default_values()
 
+        self.depth = 0
+        self.doc = ""
+        self.name = ""
         self.attributes = {}
+        self.parameters = []
+        self.state = []
 
     def interpret(self, data):
 
@@ -56,46 +61,92 @@ class Bootstrap:
     def say(self, *args, **kwargs):
         """ Write a python cog file to interpret rst """
         self.response = []
+        self.imports = []
         self.dump(self.document)
 
-        return '\n'.join(self.response)
+        print('imports:', self.imports)
+        print('response:', self.response)
+        return '\n'.join(self.imports + self.response)
 
     def dump(self, data, depth=0):
 
+        print()
         for item in data:
-            print(' ' * depth, item, type(item))
+            print('--' * (depth+2), str(item)[:30], type(item))
 
             self.update_attributes(item)
 
-            name = item_name(item)
+            name = item_name(item).lower()
 
             method = getattr(self, name, self.unknown)
 
             print(name)
-            self.response.append(method(item, depth))
-
-            for sub in item:
-                if not str(sub) in sub:
+            self.response.append(self.log(item, depth))
+            #self.response.append(method(item, depth))
+            
+            method(item, depth)
+            
+            for sub in item.children:
+                print("SUB", sub)
+                #print(dir(sub))
+                if str(sub) != sub:
                     self.dump(sub, depth+1)
+
+        if self.state:
+            method = self.state.pop()
+            getattr(self, method)(item, depth)
 
         return
 
-    def update_attributes(self, item):
+    def walk(self):
 
+        self.document.walkabout(self)
+
+    def dispatch_visit(self, *args):
+
+        print('--' * self.depth, "VISIT: ", args)
+        self.depth += 1
+
+    def dispatch_departure(self, *args):
+
+        self.depth -= 1
+        print('--' * self.depth, "DEPART:", args)
+
+    def update_attributes(self, item):
+        """ Not sure if this helps or not """
         attributes = getattr(item, 'attributes', {})
-        print(attributes)
+        #print(attributes)
         self.attributes.update(attributes)
-        print(self.attributes)
+        #print(self.attributes)
+
+    def log(self, item, depth):
+
+        return "# %s: content: %s depth: %d" % (
+            item_name(item), item.astext(), depth)
+
 
     def unknown(self, item, depth):
 
-        return "# unknkown: %s depth: %d" % (item_name(item), depth)
+        return "# unknown: %s content: %s depth: %d" % (
+            item_name(item), item.astext(), depth)
 
     def section(self, item, depth):
-        """ Top section is a class """
+        """ Method or class depending on depth """
+        print('SECTION')
+        if not self.state:
+            self.state.append('_class')
+            return
 
-        self.name = item.attributes['ids'][0]
-        return self._class(item, depth)
+        # Call method for current state
+        method = self.state.pop()
+        print("calling method:", method)
+        getattr(self, method)(item, depth)
+            
+        self.state.append('_method')
+
+    def title(self, item, depth):
+
+        self.name = item.astext()
 
     def paragraph(self, item, depth):
         """ Top section is a class """
@@ -112,27 +163,41 @@ class Bootstrap:
         
         return self._method(item, depth)
 
+    def term(self, item, depth):
+
+        self.action = item.astext()
+
+    def definition_list(self, item, depth):
+
+        pass
+
     def _method(self, item, depth):
 
-        TEMPLATE = """
-        def %(method)s(self):
+        self.parameter_string = ','.join(
+            self.parameters + ['*args', '**kwargs'])
+            
+        template = """
+        def %(name)s(self, %(parameter_string)s):
 
             return "%(result)s"
         """
-        msg = TEMPLATE % self.__dict__
-
-        return self.form(msg, depth)
+        print("XXX Method: ", self.name)
+        self.write(template, depth)
 
     def _class(self, item, depth):
 
-        TEMPLATE = """
+        template = '''
         class %(name)s:
-            pass
+            """ %(doc)s """
+        '''
+        print("XXX Class: ", self.name)
+        self.write(template, depth)
 
-        """
-        msg = TEMPLATE % self.__dict__
+    def write(self, template, depth):
 
-        return self.form(msg, depth)
+        msg = template % self.__dict__
+
+        self.response += self.form(msg, depth)
 
     def form(self, msg, depth):
 
@@ -140,8 +205,8 @@ class Bootstrap:
         tab = 4
         pad = " " * tab
         
-        return '\n'.join([(depth * pad) + line[2*tab:]
-                          for line in lines])
+        return [(depth * pad) + line[2*tab:]
+                for line in lines]
 
 
 def clean_method_name(method):
