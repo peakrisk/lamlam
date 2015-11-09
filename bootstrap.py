@@ -104,7 +104,8 @@ class Bootstrap:
 
     def dispatch_visit(self, *args):
 
-        print('--' * self.depth, "VISIT: ", args)
+        name = item_name(args[0])
+        print('--' * self.depth, "VISIT: ", len(args), args, name)
         self.depth += 1
 
     def dispatch_departure(self, *args):
@@ -215,6 +216,27 @@ def clean_method_name(method):
 
     return method
     
+class Method(object):
+
+    def __init__(self):
+
+        self.name = "method"
+        self.code = "pass"
+        self.doc = ""
+        self.parameters = ['*args', '**kwargs']
+
+
+class Class(object):
+
+    def __init__(self):
+
+        self.name = "method"
+        self.code = "pass"
+        self.doc = ""
+        self.parameters = ['*args', '**kwargs']
+
+        self.methods = []
+
 
 if __name__ == '__main__':
 
