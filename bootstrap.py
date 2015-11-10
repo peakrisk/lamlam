@@ -104,7 +104,14 @@ class Bootstrap:
 
     def dispatch_visit(self, *args):
 
-        name = item_name(args[0])
+        item = args[0]
+        name = item_name(item)
+        method = getattr(self, 'visit_' + name, self.unknown)
+
+        print(name)
+        method(item)
+        self.log(item)
+
         print('--' * self.depth, "VISIT: ", len(args), args, name)
         self.depth += 1
 
@@ -112,6 +119,10 @@ class Bootstrap:
 
         self.depth -= 1
         print('--' * self.depth, "DEPART:", args)
+        item = args[0]
+        name = item_name(item)
+        method = getattr(self, 'depart_' + name, self.unknown)
+        method(item)
 
     def update_attributes(self, item):
         """ Not sure if this helps or not """
@@ -120,59 +131,64 @@ class Bootstrap:
         self.attributes.update(attributes)
         #print(self.attributes)
 
-    def log(self, item, depth):
+    def log(self, item):
 
         return "# %s: content: %s depth: %d" % (
-            item_name(item), item.astext(), depth)
+            item_name(item), item.astext(), self.depth)
 
 
-    def unknown(self, item, depth):
+    def unknown(self, item):
 
         return "# unknown: %s content: %s depth: %d" % (
-            item_name(item), item.astext(), depth)
+            item_name(item), item.astext(), self.depth)
 
-    def section(self, item, depth):
+    def visit_section(self, item):
         """ Method or class depending on depth """
         print('SECTION')
         if not self.state:
-            self.state.append('_class')
+            self.state.append(Class())
             return
 
-        # Call method for current state
-        method = self.state.pop()
-        print("calling method:", method)
-        getattr(self, method)(item, depth)
-            
-        self.state.append('_method')
+        method = Method()
+        self.state[0].methods.append(method)
+        self.state.append(method)
 
-    def title(self, item, depth):
+    def depart_section(self, item):
 
-        self.name = item.astext()
+        obj = self.state.pop()
+        if not self.state:
+            print('\n'.join(obj.dump(1)))
 
-    def paragraph(self, item, depth):
-        """ Top section is a class """
-        
-        method = item.astext()
-        self.method = clean_method_name(method)
-        return ""
+    def visit_title(self, item):
 
-    def block_quote(self, item, depth):
+        obj = self.state[-1]
+        obj.name = item.astext()
+
+    def visit_paragraph(self, item):
+        """ Paragraphs are docstrings """
+
+        print('PARA:', item.astext())
+        obj = self.state[-1]
+        obj.doc += item.astext()
+
+
+    def block_quote(self, item):
         """ Complete a function """
 
         result = item.astext()
         self.result = result
         
-        return self._method(item, depth)
+        return self._method(item, self.depth)
 
-    def term(self, item, depth):
+    def term(self, item):
 
         self.action = item.astext()
 
-    def definition_list(self, item, depth):
+    def definition_list(self, item):
 
         pass
 
-    def _method(self, item, depth):
+    def _method(self, item):
 
         self.parameter_string = ','.join(
             self.parameters + ['*args', '**kwargs'])
@@ -183,30 +199,30 @@ class Bootstrap:
             return "%(result)s"
         """
         print("XXX Method: ", self.name)
-        self.write(template, depth)
+        self.write(template)
 
-    def _class(self, item, depth):
+    def _class(self, item):
 
         template = '''
         class %(name)s:
             """ %(doc)s """
         '''
         print("XXX Class: ", self.name)
-        self.write(template, depth)
+        self.write(template, self.depth)
 
-    def write(self, template, depth):
+    def write(self, template):
 
         msg = template % self.__dict__
 
-        self.response += self.form(msg, depth)
+        self.response += self.form(msg)
 
-    def form(self, msg, depth):
+    def form(self, msg):
 
         lines = msg.split('\n')
         tab = 4
         pad = " " * tab
         
-        return [(depth * pad) + line[2*tab:]
+        return [(self.depth * pad) + line[2*tab:]
                 for line in lines]
 
 
@@ -215,8 +231,35 @@ def clean_method_name(method):
     method = method.strip(':?').replace(' ', '_')
 
     return method
+
+class CodeWriter(object):
+
+    template = ""
+
+    def lines(self, depth):
+
+        msg = self.template % self.__dict__
+
+        return self.form(msg, depth)
+
+    def form(self, msg, depth):
+
+        lines = msg.split('\n')
+        tab = 4
+        pad = " " * tab
+        
+        return [(depth * pad) + line[tab:]
+                for line in lines]
+
+
+class Method(CodeWriter):
+
+    template = '''
+    def %(name)s(self, %(parameter_string)s):
+        """ %(doc)s """
     
-class Method(object):
+        return %(result)s
+    '''
 
     def __init__(self):
 
@@ -224,18 +267,40 @@ class Method(object):
         self.code = "pass"
         self.doc = ""
         self.parameters = ['*args', '**kwargs']
+        self.result = None
+
+    def dump(self, depth):
+
+        self.parameter_string = ','.join(
+            self.parameters)
+        
+        return self.lines(depth)
 
 
-class Class(object):
+class Class(CodeWriter):
 
+    template = '''
+    class %(name)s:
+    """ %(doc)s """
+    '''
+    
     def __init__(self):
 
         self.name = "method"
         self.code = "pass"
         self.doc = ""
-        self.parameters = ['*args', '**kwargs']
 
         self.methods = []
+
+    def dump(self, depth):
+
+        lines = self.lines(depth)
+
+        for method in self.methods:
+            lines += method.dump(depth + 1)
+
+        return lines
+            
 
 
 if __name__ == '__main__':
