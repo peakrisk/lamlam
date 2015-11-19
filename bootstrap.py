@@ -162,14 +162,24 @@ class Bootstrap:
     def visit_title(self, item):
 
         obj = self.state[-1]
-        obj.name = item.astext()
+        obj.title(item.astext())
+
+    def visit_term(self, item):
+
+        obj = self.state[-1]
+        obj.term(item.astext())
+
+    def depart_definition(self, item):
+
+        obj = self.state[-1]
+        obj.end_term(item.astext())
 
     def visit_paragraph(self, item):
-        """ Paragraphs are docstrings """
+        """ Pass paragraph text to current object """
 
         print('PARA:', item.astext())
         obj = self.state[-1]
-        obj.doc += item.astext()
+        obj.paragraph(item.astext())
 
 
     def block_quote(self, item):
@@ -188,43 +198,6 @@ class Bootstrap:
 
         pass
 
-    def _method(self, item):
-
-        self.parameter_string = ','.join(
-            self.parameters + ['*args', '**kwargs'])
-            
-        template = """
-        def %(name)s(self, %(parameter_string)s):
-
-            return "%(result)s"
-        """
-        print("XXX Method: ", self.name)
-        self.write(template)
-
-    def _class(self, item):
-
-        template = '''
-        class %(name)s:
-            """ %(doc)s """
-        '''
-        print("XXX Class: ", self.name)
-        self.write(template, self.depth)
-
-    def write(self, template):
-
-        msg = template % self.__dict__
-
-        self.response += self.form(msg)
-
-    def form(self, msg):
-
-        lines = msg.split('\n')
-        tab = 4
-        pad = " " * tab
-        
-        return [(self.depth * pad) + line[2*tab:]
-                for line in lines]
-
 
 def clean_method_name(method):
 
@@ -235,6 +208,12 @@ def clean_method_name(method):
 class CodeWriter(object):
 
     template = ""
+
+    def __init__(self):
+
+        self.name = "unknown"
+        self.doc = []
+        self.current = [self.doc]
 
     def lines(self, depth):
 
@@ -251,21 +230,55 @@ class CodeWriter(object):
         return [(depth * pad) + line[tab:]
                 for line in lines]
 
+    def title(self, text):
+        """ Handle title text """
+        self.name = clean_method_name(text)
+
+    def term(self, text):
+
+        text = text[:-1]
+        if text == 'see':
+            text = 'imports'
+        print('TERM:', text)
+        self.pop_term = False
+        if hasattr(self, text):
+            self.current.append(getattr(self, text))
+            self.pop_term = True
+
+    def end_term(self, text):
+
+        print('END_TERM:', self.current)
+        if self.pop_term:
+            self.current.pop()
+
+    def paragraph(self, text):
+        """ Handle paragraph text """
+        print('CURRENT PARA:', self.current)
+        print('CURRENT -1:', self.current[-1])
+        print('CURRENT TEXT:', text)
+        self.current[-1] += text.split('\n')
+        #attr = getattr(self, self.current, None)
+        #print('CURRENT:', self.current, 'ATTR:', type(attr))
+        #if attr is not None:
+        #    setattr(self, self.current, attr + text)
+
 
 class Method(CodeWriter):
 
     template = '''
     def %(name)s(self, %(parameter_string)s):
         """ %(doc)s """
+
+        %(code)s
     
         return %(result)s
     '''
 
     def __init__(self):
 
-        self.name = "method"
-        self.code = "pass"
-        self.doc = ""
+        super().__init__()
+
+        self.code = []
         self.parameters = ['*args', '**kwargs']
         self.result = None
 
@@ -273,6 +286,9 @@ class Method(CodeWriter):
 
         self.parameter_string = ','.join(
             self.parameters)
+
+        self.doc = '\n'.join(self.doc)
+        self.code = '\n'.join(self.code)
         
         return self.lines(depth)
 
@@ -281,18 +297,22 @@ class Class(CodeWriter):
 
     template = '''
     class %(name)s:
-    """ %(doc)s """
+        """ %(doc)s
+        """
     '''
     
     def __init__(self):
 
-        self.name = "method"
-        self.code = "pass"
-        self.doc = ""
+        super().__init__()
 
+        self.code = ["pass"]
+        self.imports = []
         self.methods = []
 
     def dump(self, depth):
+
+        self.doc = '\n'.join(self.doc)
+        self.code = '\n'.join(self.code)
 
         lines = self.lines(depth)
 
