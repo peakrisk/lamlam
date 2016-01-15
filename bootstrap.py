@@ -81,10 +81,10 @@ class Bootstrap:
             method = getattr(self, name, self.unknown)
 
             print(name)
-            self.response.append(self.log(item, depth))
+            self.response.append(self.log(item))
             #self.response.append(method(item, depth))
             
-            method(item, depth)
+            method(item)
             
             for sub in item.children:
                 print("SUB", sub)
@@ -201,7 +201,7 @@ class Bootstrap:
 
 def clean_method_name(method):
 
-    method = method.strip(':?').replace(' ', '_')
+    method = method.lower().strip(':?').replace(' ', '_')
 
     return method
 
