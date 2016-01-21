@@ -8,3 +8,15 @@ humans.
 The Babelfish is the interpreter that helps things communicate.
 
 I interprets and tries to understand perspective and context.
+
+Universal
+=========
+
+The Babelfish is the universal interpretter.  If you do no know how to
+talk to something, use the babelfish.
+
+Training
+========
+
+Give it some training data, see what how it does.
+
